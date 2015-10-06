@@ -1,0 +1,11 @@
+
+{% set service = salt['grains.filter_by']({
+    'Debian': {
+        'pkgs': ['iptables','iptables-persistent' ],
+        'service': 'iptables-persistent',
+    },
+    'RedHat': {
+        'pkgs': ['iptables'],
+        'service': 'iptables',
+    },
+}, merge=salt['pillar.get']('iptables:service')) %}

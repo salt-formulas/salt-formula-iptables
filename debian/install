@@ -1,0 +1,2 @@
+iptables/*             /usr/share/salt-formulas/env/iptables/
+metadata/service/*      /usr/share/salt-formulas/reclass/service/iptables/

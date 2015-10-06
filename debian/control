@@ -1,0 +1,15 @@
+Source: salt-formula-iptables
+Maintainer: Jan Kaufman <jan.kaufman@tcpcloud.eu>
+Section: admin
+Priority: optional
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.6
+Homepage: http://www.tcpcloud.eu
+Vcs-Browser: https://github.com/tcpcloud/salt-formula-iptables
+Vcs-Git: https://github.com/tcpcloud/salt-formula-iptables.git
+
+Package: salt-formula-iptables
+Architecture: all
+Depends: ${misc:Depends}, salt-master, reclass
+Description: iptables salt formula
+ Configure iptables rules.
