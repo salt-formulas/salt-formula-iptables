@@ -18,6 +18,7 @@ Simple INPUT chain httpd ACCEPT rule on position 1
           chain:
             INPUT:
               enabled: true
+              policy: DROP
               rule:
                 httpd:
                   position: 1

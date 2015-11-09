@@ -15,7 +15,14 @@ iptables_services:
     - pkg: iptables_packages
 
 {%- for chain_name, chain in service.get('chain', {}).iteritems() %}
- 
+
+{%- if chain.policy is defined %}
+iptables_{{ chain_name }}_policy:
+  iptables.set_policy:
+    - chain: {{ chain_name }}
+    - policy: {{ chain.policy }}
+{%- endif %}
+
 {%- for rule_name, rule in chain.get('rule', {}).iteritems() %}
 
 iptables_{{ chain_name }}_{{ rule_name }}:
