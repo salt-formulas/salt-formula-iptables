@@ -21,6 +21,7 @@ iptables_{{ chain_name }}_policy:
   iptables.set_policy:
     - chain: {{ chain_name }}
     - policy: {{ chain.policy }}
+    - table: filter
 {%- endif %}
 
 {%- for rule_name, rule in chain.get('rule', {}).iteritems() %}
