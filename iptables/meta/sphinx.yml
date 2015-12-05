@@ -1,0 +1,9 @@
+doc:
+  name: iptables
+  description: iptables is a user-space application program that allows a system administrator to configure the tables provided by the Linux kernel firewall and the chains and rules it stores.
+  role:
+  {%- if pillar.iptables.service is defined %}
+    service:
+      name: service
+      param: {}
+  {%- endif %}
