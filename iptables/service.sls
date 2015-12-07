@@ -62,6 +62,9 @@ iptables_{{ chain_name }}_{{ rule_name }}:
   {%- if rule.to_destination is defined %}
   - to-destination: {{ rule.to_destination }}
   {%- endif %}
+  {%- if rule.to_source is defined %}
+  - to-source: {{ rule.to_source }}
+  {%- endif %}
   {%-  if rule.source_network is defined %}
   - source: {{ rule.source_network }}
   {%- endif %}
