@@ -10,6 +10,21 @@ iptables_{{ chain_name }}_policy:
     - table: filter
 {%- endif %}
 
+{%- for service_name, service in pillar.items() %}
+{%- if service.get('_support', {}).get('iptables', {}).get('enabled', False) %}
+
+{%- set grains_fragment_file = service_name+'/meta/iptables.yml' %}
+{%- macro load_grains_file() %}{% include grains_fragment_file %}{% endmacro %}
+{%- set grains_yaml = load_grains_file()|load_yaml %}
+
+{%- for rule in grains_yaml.iptables.rules %}
+{%- set rule_name = service_name+'_'+loop.index|string %}
+{% include "iptables/_rule.sls" %}
+{%- endfor %}
+
+{%- endif %}
+{%- endfor %}
+
 {%- for rule in chain.get('rules', []) %}
 {%- set rule_name = loop.index %}
 {% include "iptables/_rule.sls" %}

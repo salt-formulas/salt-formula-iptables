@@ -6,7 +6,7 @@ iptables_{{ chain_name }}_{{ rule_name }}:
   iptables.append:
   {%- if loop.index != 1 %}
   - require:
-    - iptables: iptables_{{ chain_name }}_{{ loop.index - 1 }}
+    - iptables: iptables_{{ chain_name }}_{% if service_name is defined %}{{ service_name }}_{% endif %}{{ loop.index - 1 }}
   {%- endif %}
   {%- endif %}
   - table: {{ rule.get('table', 'filter') }}
