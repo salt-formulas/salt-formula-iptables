@@ -71,7 +71,10 @@ iptables_{{ chain_name }}_{{ rule_name }}:
   {%-  if rule.destination_network is defined %}
   - destination: {{ rule.destination_network }}
   {%- endif %}
-
+  {%- if chain.policy is defined %}
+  - require_in: 
+    - iptables: iptables_{{ chain_name }}_policy:
+  {%- endif %}
   - save: True
 
 {%- endfor %}
