@@ -1,0 +1,8 @@
+name: iptables
+os: Debian, RedHat
+os_family: Debian, RedHat
+version: 201606
+release: 1
+summary: iptables salt formula
+description: Configure iptables rules.
+top_level_dir: iptables
