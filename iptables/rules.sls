@@ -30,8 +30,4 @@ iptables_{{ chain_name }}_policy:
 {% include "iptables/_rule.sls" %}
 {%- endfor %}
 
-{%- for rule_name, rule in chain.get('rule', {}).iteritems() %}
-{% include "iptables/_rule.sls" %}
-{%- endfor %}
-
 {%- endfor %}
