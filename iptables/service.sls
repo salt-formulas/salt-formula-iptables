@@ -10,7 +10,11 @@ iptables_packages:
   - names: {{ service.pkgs }}
 
 iptables_services:
+{%- if grains.init == 'systemd' %}
+  service.running:
+{%- else %}
   service.dead:
+{%- endif %}
   - enable: true
   - name: {{ service.service }}
   - sig: test -e /etc/iptables/rules.v4

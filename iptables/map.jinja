@@ -2,10 +2,14 @@
 {% set service = salt['grains.filter_by']({
     'Debian': {
         'pkgs': ['iptables','iptables-persistent' ],
-        'service': 'iptables-persistent',
+        'service': 'netfilter-persistent',
     },
     'RedHat': {
         'pkgs': ['iptables'],
         'service': 'iptables',
     },
-}, merge=salt['pillar.get']('iptables:service')) %}
+}, merge=salt['grains.filter_by']({
+    'trusty': {
+        'service': 'iptables-persistent',
+    },
+}, grain='oscodename', merge=salt['pillar.get']('iptables:service'))) %}
