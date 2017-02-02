@@ -88,6 +88,22 @@ Allow access from local network
                   source_network: 192.168.1.0/24
                   jump: ACCEPT
 
+IPv6 is supported as well
+		
+.. code-block:: yaml
+
+    parameters:
+      iptables:
+        service:
+          chain:
+            INPUT:
+              rules:
+                - protocol: tcp
+		  family: ipv6
+                  destination_port: 22
+                  source_network: 2001:DB8::/32
+                  jump: ACCEPT
+		  
 Read more
 =========
 
