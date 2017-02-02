@@ -5,6 +5,14 @@
 {%- if chain.policy is defined %}
 iptables_{{ chain_name }}_policy:
   iptables.set_policy:
+    - family: ipv4
+    - chain: {{ chain_name }}
+    - policy: {{ chain.policy }}
+    - table: filter
+
+iptables_{{ chain_name }}_ipv6_policy:
+  iptables.set_policy:
+    - family: ipv6
     - chain: {{ chain_name }}
     - policy: {{ chain.policy }}
     - table: filter

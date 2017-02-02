@@ -36,9 +36,22 @@ iptables_{{ chain_name }}_policy:
     - table: filter
     - require_in:
       - iptables: iptables_flush
+
+iptables_{{ chain_name }}_ipv6_policy:
+  iptables.set_policy:
+    - chain: {{ chain_name }}
+    - family: ipv6
+    - policy: ACCEPT
+    - table: filter
+    - require_in:
+      - iptables: ip6tables_flush
 {%- endfor %}
 
 iptables_flush:
   iptables.flush
+
+ip6tables_flush:
+  iptables.flush:
+    - family: ipv6
 
 {%- endif %}
