@@ -22,6 +22,7 @@ ping
     parametetrs:
       iptables:
         service:
+          enabled: True
           chain:
             INPUT:
               rules:
@@ -89,21 +90,23 @@ Allow access from local network
                   jump: ACCEPT
 
 IPv6 is supported as well
-		
+
 .. code-block:: yaml
 
     parameters:
       iptables:
         service:
+          enabled: True
+          ipv6: True
           chain:
             INPUT:
               rules:
                 - protocol: tcp
-		  family: ipv6
+                  family: ipv6
                   destination_port: 22
                   source_network: 2001:DB8::/32
                   jump: ACCEPT
-		  
+
 Read more
 =========
 

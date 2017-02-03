@@ -37,6 +37,7 @@ iptables_{{ chain_name }}_policy:
     - require_in:
       - iptables: iptables_flush
 
+{%-   if service.ipv6 %}
 iptables_{{ chain_name }}_ipv6_policy:
   iptables.set_policy:
     - chain: {{ chain_name }}
@@ -45,13 +46,18 @@ iptables_{{ chain_name }}_ipv6_policy:
     - table: filter
     - require_in:
       - iptables: ip6tables_flush
+{%-   endif %}
+
 {%- endfor %}
 
 iptables_flush:
   iptables.flush
 
+{%- if service.ipv6 %}
 ip6tables_flush:
   iptables.flush:
     - family: ipv6
+{%- endif %}
+
 
 {%- endif %}

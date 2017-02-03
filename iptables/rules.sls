@@ -10,12 +10,14 @@ iptables_{{ chain_name }}_policy:
     - policy: {{ chain.policy }}
     - table: filter
 
+{%-   if service.ipv6 %}
 iptables_{{ chain_name }}_ipv6_policy:
   iptables.set_policy:
     - family: ipv6
     - chain: {{ chain_name }}
     - policy: {{ chain.policy }}
     - table: filter
+{%-   endif %}
 {%- endif %}
 
 {%- for service_name, service in pillar.items() %}
