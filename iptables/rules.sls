@@ -10,7 +10,7 @@ iptables_{{ chain_name }}_policy:
     - policy: {{ chain.policy }}
     - table: filter
 
-{%-   if service.ipv6 %}
+{%-   if grains.ipv6|default(False) and service.ipv6|default(True) %}
 iptables_{{ chain_name }}_ipv6_policy:
   iptables.set_policy:
     - family: ipv6

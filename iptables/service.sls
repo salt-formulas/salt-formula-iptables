@@ -37,7 +37,7 @@ iptables_{{ chain_name }}_policy:
     - require_in:
       - iptables: iptables_flush
 
-{%-   if service.ipv6 %}
+{%-   if grains.ipv6|default(False) and service.ipv6|default(True) %}
 iptables_{{ chain_name }}_ipv6_policy:
   iptables.set_policy:
     - chain: {{ chain_name }}
@@ -53,7 +53,7 @@ iptables_{{ chain_name }}_ipv6_policy:
 iptables_flush:
   iptables.flush
 
-{%- if service.ipv6 %}
+{%- if grains.ipv6|default(False) and service.ipv6|default(True) %}
 ip6tables_flush:
   iptables.flush:
     - family: ipv6
