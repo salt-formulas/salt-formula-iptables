@@ -11,6 +11,9 @@ iptables_{{ chain_name }}_{{ rule_name }}:
   {%- endif %}
   - table: {{ rule.get('table', 'filter') }}
   - chain: {{ chain_name }}
+  {%- if rule.family is defined %}
+  - family: {{ rule.family }}
+  {%- endif %}
   {%- if rule.jump is defined %}
   - jump: {{ rule.jump }}
   {%- endif %}
