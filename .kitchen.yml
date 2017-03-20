@@ -1,0 +1,43 @@
+---
+driver:
+  name: docker
+  hostname: iptables.ci.local
+  use_sudo: false
+
+provisioner:
+  name: salt_solo
+  salt_install: bootstrap
+  salt_bootstrap_url: https://bootstrap.saltstack.com
+  salt_version: latest
+  require_chef: false
+  log_level: error
+  formula: iptables
+  grains:
+    noservices: True
+  state_top:
+    base:
+      "*":
+        - iptables
+  pillars:
+    top.sls:
+      base:
+        "*":
+          - iptables
+
+verifier:
+  name: inspec
+  sudo: true
+
+platforms:
+  - name: <%=ENV['PLATFORM'] || 'ubuntu-xenial'%>
+    driver_config:
+      image: <%=ENV['PLATFORM'] || 'trevorj/salty-whales:xenial'%>
+      platform: ubuntu
+
+suites:
+
+  - name: iptables_server
+    provisioner:
+      pillars-from-files:
+        iptables.sls: tests/pillar/iptables_server.sls
+# vim: ft=yaml sw=2 ts=2 sts=2 tw=125
