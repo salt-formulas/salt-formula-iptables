@@ -30,6 +30,8 @@ before_script:
 script:
   - test ! -e .kitchen.yml || bundle exec kitchen test -t tests/integration
 
+if [[ TRAVIS_BRANCH = master ]]; then
+
 notifications:
   on:
     branch: master
@@ -41,3 +43,5 @@ notifications:
     on_start: never     # options: [always|never|change] default: always
     on_cancel: never    # options: [always|never|change] default: always
     on_error: always    # options: [always|never|change] default: always
+    
+; fi
