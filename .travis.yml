@@ -2,7 +2,7 @@ sudo: required
 services:
   - docker
 
-
+install:
   - pip install PyYAML
   - pip install virtualenv
   - |
@@ -18,8 +18,10 @@ services:
     #gem 'kitchen-salt', '>=0.2.25'
   - bundle install
 
+env:
     - PLATFORM=trevorj/salty-whales:trusty
     - PLATFORM=trevorj/salty-whales:xenial
+
 
 before_script:
   - set -o pipefail
