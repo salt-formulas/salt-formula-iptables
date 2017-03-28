@@ -19,7 +19,7 @@ ping
 
 .. code-block:: yaml
 
-    parametetrs:
+    parameters:
       iptables:
         service:
           enabled: True
@@ -38,7 +38,7 @@ Accept connections on port 22
 
 .. code-block:: yaml
 
-    parametetrs:
+    parameters:
       iptables:
         service:
           chain:
@@ -52,7 +52,7 @@ Set drop policy on INPUT chain:
 
 .. code-block:: yaml
 
-    parametetrs:
+    parameters:
       iptables:
         service:
           chain:
