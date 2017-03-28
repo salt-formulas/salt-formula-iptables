@@ -23,7 +23,8 @@ env:
     - PLATFORM=trevorj/salty-whales:xenial
 
 before_script:
-    - make test | tail
+  - set -o pipefail
+  - make test | tail
 
 script:
   - test ! -e .kitchen.yml || bundle exec kitchen test -t tests/integration
