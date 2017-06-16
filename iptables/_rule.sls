@@ -57,4 +57,6 @@ iptables_{{ chain_name }}_{{ rule_name }}:
   - require_in:
     - iptables: iptables_{{ chain_name }}_policy
   {%- endif %}
+  - require:
+    - iptables: iptables_{{ chain_name }}{% if rule.family is defined %}_{{ rule.family }}{% endif %}
   - save: True
