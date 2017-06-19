@@ -3,7 +3,7 @@ iptables:
     enabled: true
     chain:
       INPUT:
-        rule:
+        rules:
           test:
             position: 1
             table: filter
