@@ -4,7 +4,6 @@ iptables:
     chain:
       INPUT:
         rules:
-          test:
           - position: 1
             table: filter
             protocol: tcp
