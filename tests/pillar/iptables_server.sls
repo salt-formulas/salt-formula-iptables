@@ -5,7 +5,7 @@ iptables:
       INPUT:
         rules:
           test:
-            position: 1
+          - position: 1
             table: filter
             protocol: tcp
             destination_port: 8088
