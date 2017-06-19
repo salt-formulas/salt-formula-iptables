@@ -18,8 +18,10 @@ iptables_{{ chain_name }}_ipv6:
     - table: filter
     - require:
       - pkg: iptables_packages
+{%-     if chain.policy is defined %}
     - require_in:
       - iptables: iptables_{{ chain_name }}_ipv6_policy
+{%-     endif  %}
 {%-   endif %}
 
 {%- if chain.policy is defined %}
