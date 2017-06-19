@@ -16,6 +16,7 @@ iptables_{{ chain_name }}_ipv6:
     - table: filter
     - require_in:
       - iptables: iptables_{{ chain_name }}_ipv6_policy
+{%-   endif %}
 
 {%- if chain.policy is defined %}
 iptables_{{ chain_name }}_policy:
