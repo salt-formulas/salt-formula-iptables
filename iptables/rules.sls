@@ -7,6 +7,8 @@ iptables_{{ chain_name }}:
     - family: ipv4
     - name: {{ chain_name }}
     - table: filter
+    - require:
+      - pkg: iptables_packages
 
 {%-   if grains.ipv6|default(False) and service.ipv6|default(True) %}
 iptables_{{ chain_name }}_ipv6:
@@ -14,6 +16,8 @@ iptables_{{ chain_name }}_ipv6:
     - family: ipv6
     - name: {{ chain_name }}
     - table: filter
+    - require:
+      - pkg: iptables_packages
     - require_in:
       - iptables: iptables_{{ chain_name }}_ipv6_policy
 {%-   endif %}
