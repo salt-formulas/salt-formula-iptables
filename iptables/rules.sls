@@ -1,8 +1,8 @@
 {% from "iptables/map.jinja" import service with context %}
+{%- if grains.get('virtual_subtype', None) not in ['Docker', 'LXC'] %}
 
 {%- for chain_name, chain in service.get('chain', {}).iteritems() %}
 
-{%- if grains.get('virtual_subtype', None) not in ['Docker', 'LXC'] %}
 iptables_{{ chain_name }}:
   iptables.chain_present:
     - family: ipv4
@@ -24,7 +24,6 @@ iptables_{{ chain_name }}_ipv6:
       - iptables: iptables_{{ chain_name }}_ipv6_policy
 {%-     endif  %}
 {%-   endif %}
-{%- endif %}
 
 {%- if chain.policy is defined %}
 iptables_{{ chain_name }}_policy:
@@ -69,3 +68,4 @@ iptables_{{ chain_name }}_ipv6_policy:
 {%- endfor %}
 
 {%- endfor %}
+{%- endif %}
