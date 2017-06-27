@@ -57,4 +57,8 @@ iptables_{{ chain_name }}_{{ rule_name }}:
   - require_in:
     - iptables: iptables_{{ chain_name }}_policy
   {%- endif %}
+  {%- if grains.get('virtual_subtype', None) not in ['Docker', 'LXC'] %}
+  - require:
+    - iptables: iptables_{{ chain_name }}{% if rule.family is defined %}_{{ rule.family }}{% endif %}
+  {%- endif %}
   - save: True

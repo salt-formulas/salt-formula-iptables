@@ -3,9 +3,8 @@ iptables:
     enabled: true
     chain:
       INPUT:
-        rule:
-          test:
-            position: 1
+        rules:
+          - position: 1
             table: filter
             protocol: tcp
             destination_port: 8088
