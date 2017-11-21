@@ -20,6 +20,9 @@ iptables_{{ chain_name }}_{{ rule_name }}:
   {%- if rule.match is defined %}
   - match: {{ rule.match }}
   {%- endif %}
+  {%- if rule.comment is defined %}
+  - comment: {{ rule.comment }}
+  {%- endif %}
   {%- if rule.connection_state is defined %}
   - connstate: {{ rule.connection_state }}
   {%- endif %}

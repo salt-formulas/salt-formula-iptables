@@ -88,6 +88,7 @@ Allow access from local network
                   destination_port: 22
                   source_network: 192.168.1.0/24
                   jump: ACCEPT
+                  comment: Blah
 
 IPv6 is supported as well
 
