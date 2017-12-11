@@ -90,6 +90,30 @@ Allow access from local network
                   jump: ACCEPT
                   comment: Blah
 
+Support logging with custom prefix and log level
+
+.. code-block:: yaml
+
+    parameters:
+      iptables:
+        service:
+          chain:
+            POSTROUTING:
+              rules:
+                - table: nat
+                  protocol: tcp
+                  match: multiport
+                  destination_ports:
+                    - 21
+                    - 80
+                    - 443
+                    - 2220
+                  source_network: '10.20.30.0/24'
+                  log_level: 7
+                  log_prefix: 'iptables-logging: '
+                  jump: LOG
+
+
 IPv6 is supported as well
 
 .. code-block:: yaml
