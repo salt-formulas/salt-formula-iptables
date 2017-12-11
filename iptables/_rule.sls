@@ -32,6 +32,12 @@ iptables_{{ chain_name }}_{{ rule_name }}:
   {%- if rule.destination_port is defined %}
   - dport: {{ rule.destination_port }}
   {%- endif %}
+  {%- if rule.destination_ports is defined %}
+  - dports:
+  {%- for port in rule.destination_ports %}
+    - {{ port }}
+  {% endfor %}
+  {%- endif %}
   {%- if rule.source_port is defined %}
   - sport: {{ rule.source_port }}
   {%- endif %}
@@ -55,6 +61,15 @@ iptables_{{ chain_name }}_{{ rule_name }}:
   {%- endif %}
   {%-  if rule.destination_network is defined %}
   - destination: {{ rule.destination_network }}
+  {%- endif %}
+  {%-  if rule.log_prefix is defined %}
+  - log-prefix: '{{ rule.log_prefix }}'
+  {%- endif %}
+  {%-  if rule.log_level is defined %}
+  - log-level: {{ rule.log_level }}
+  {%- endif %}
+  {%-  if rule.limit is defined %}
+  - limit: '{{ rule.limit }}'
   {%- endif %}
   {%- if chain.policy is defined %}
   - require_in:
