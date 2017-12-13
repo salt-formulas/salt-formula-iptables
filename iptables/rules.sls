@@ -48,6 +48,7 @@ iptables_{{ chain_name }}_ipv6_policy:
 {%- endif %}
 
 {%- for service_name, service in pillar.items() %}
+{%- if service is mapping %}
 {%- if service.get('_support', {}).get('iptables', {}).get('enabled', False) %}
 
 {%- set grains_fragment_file = service_name+'/meta/iptables.yml' %}
@@ -59,6 +60,7 @@ iptables_{{ chain_name }}_ipv6_policy:
 {% include "iptables/_rule.sls" %}
 {%- endfor %}
 
+{%- endif %}
 {%- endif %}
 {%- endfor %}
 
