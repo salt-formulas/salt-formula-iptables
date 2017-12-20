@@ -1,7 +1,7 @@
 
 {% set service = salt['grains.filter_by']({
     'Debian': {
-        'pkgs': ['iptables','iptables-persistent' ],
+        'pkgs': ['iptables','netfilter-persistent' ],
         'service': 'netfilter-persistent',
     },
     'RedHat': {

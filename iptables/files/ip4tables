@@ -1,0 +1,101 @@
+#!/bin/sh
+
+# This file is part of netfilter-persistent
+# (was iptables-persistent)
+# Copyright (C) 2009, Simon Richter <sjr@debian.org>
+# Copyright (C) 2010, 2014 Jonathan Wiltshire <jmw@debian.org>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation, either version 3
+# of the License, or (at your option) any later version.
+
+rc=0
+
+load_rules()
+{
+	#load IPv4 rules
+	if [ ! -f /etc/iptables/rules.v4 ]; then
+		echo "Warning: skipping IPv4 (no rules to load)"
+	else
+{%- if provider == 'iptables-restore' %}
+		iptables-restore --test < /etc/iptables/rules.v4 2> /dev/null
+		if [ $? -ne 0 ]; then
+			rc=1
+		else
+			iptables-save > /etc/iptables/rules.v4.bak
+			grep -v __saltstack__ /etc/iptables/rules.v4.bak | iptables-restore 2> /dev/null
+			iptables-restore --noflush < /etc/iptables/rules.v4 2> /dev/null
+			if [ $? -ne 0 ]; then
+				rc=1
+				iptables-restore < /etc/iptables/rules.v4.bak 2> /dev/null
+			fi
+		fi
+{%- else %}
+		iptables-restore < /etc/iptables/rules.v4 2> /dev/null
+		if [ $? -ne 0 ]; then
+			rc=1
+		fi
+{%- endif %}
+	fi
+}
+
+save_rules()
+{
+	#save IPv4 rules
+	#need at least iptable_filter loaded:
+	/sbin/modprobe -q iptable_filter
+	if [ ! -f /proc/net/ip_tables_names ]; then
+		echo "Warning: skipping IPv4 (no modules loaded)"
+	elif [ -x /sbin/iptables-save ]; then
+		touch /etc/iptables/rules.v4
+		chmod 0640 /etc/iptables/rules.v4
+		iptables-save > /etc/iptables/rules.v4
+		if [ $? -ne 0 ]; then
+			rc=1
+		fi
+	fi
+}
+
+flush_rules()
+{
+	if [ ! -f /proc/net/ip_tables_names ]; then
+		log_action_cont_msg "Warning: skipping IPv4 (no module loaded)"
+	elif [ -x /sbin/iptables ]; then
+		for param in F Z X; do /sbin/iptables -$param; done
+		for table in $(cat /proc/net/ip_tables_names)
+		do
+			/sbin/iptables -t $table -F
+			/sbin/iptables -t $table -Z
+			/sbin/iptables -t $table -X
+		done
+		for chain in INPUT FORWARD OUTPUT
+		do
+			/sbin/iptables -P $chain ACCEPT
+		done
+	fi
+}
+
+case "$1" in
+start|restart|reload|force-reload)
+	load_rules
+	;;
+save)
+	save_rules
+	;;
+stop)
+	# Why? because if stop is used, the firewall gets flushed for a variable
+	# amount of time during package upgrades, leaving the machine vulnerable
+	# It's also not always desirable to flush during purge
+	echo "Automatic flushing disabled, use \"flush\" instead of \"stop\""
+	;;
+flush)
+	flush_rules
+	;;
+*)
+	echo "Usage: $0 {start|restart|reload|force-reload|save|flush}" >&2
+	exit 1
+	;;
+esac
+
+exit $rc
