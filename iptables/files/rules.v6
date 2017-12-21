@@ -6,7 +6,7 @@
 {%- endfor %}
 
 {%- for chain_name, chain in chains.iteritems() %}
-{%- for rule in chain.rules %}
+{%- for rule in meta_rules + chain.rules %}
 {%- if rule.get('table', 'filter').lower() == 'filter' and rule.get('family', 'ipv4') == 'ipv6' %}
 {%- set r = {
   'full': 'True',

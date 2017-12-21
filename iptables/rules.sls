@@ -2,6 +2,18 @@
 {%- if grains.get('virtual_subtype', None) not in ['Docker', 'LXC'] %}
 
 {%- if grains.os_family == 'Debian' and service.get('provider') == "iptables-restore" %}
+
+{%- set meta_rules = [] %}
+{%- for service_name, service in pillar.items() %}
+{%- if service.get('_support', {}).get('iptables', {}).get('enabled', False) %}
+
+{%- set grains_fragment_file = service_name+'/meta/iptables.yml' %}
+{%- macro load_grains_file() %}{% include grains_fragment_file %}{% endmacro %}
+{%- set grains_yaml = load_grains_file()|load_yaml %}
+{%- set meta_rules = meta_rules + grains_yaml.iptables.rules %}
+
+{%- endif %}
+{%- endfor %}
 /etc/iptables/rules.v4.tmp:
   file.managed:
     - source: salt://iptables/files/rules.v4
@@ -9,6 +21,7 @@
     - makedirs: True
     - defaults:
         chains: {{ service.get('chain', {}) }}
+        meta_rules: {{ meta_rules }}
     - require:
       - pkg: iptables_packages
       - file: /usr/share/netfilter-persistent/plugins.d/15-ip4tables
@@ -35,6 +48,7 @@ cp -a /etc/iptables/rules.v4 /etc/iptables/rules.v4.tmp:
     - makedirs: True
     - defaults:
         chains: {{ service.get('chain', {}) }}
+        meta_rules: {{ meta_rules }}
     - require:
       - pkg: iptables_packages
       - file: /usr/share/netfilter-persistent/plugins.d/25-ip6tables
