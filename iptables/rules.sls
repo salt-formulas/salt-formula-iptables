@@ -1,17 +1,19 @@
 {% from "iptables/map.jinja" import service with context %}
 {%- if grains.get('virtual_subtype', None) not in ['Docker', 'LXC'] %}
 
-{%- if grains.os_family == 'Debian' and service.get('provider') == "iptables-restore" %}
+{%- if 'iptables-restore' in service.providers and service.get('provider') == "iptables-restore" %}
 
 {%- set meta_rules = [] %}
-{%- for service_name, service in pillar.items() %}
-{%- if service.get('_support', {}).get('iptables', {}).get('enabled', False) %}
+{%- for service_name, meta_service in pillar.items() %}
+{%- if meta_service is mapping %}
+{%- if meta_service.get('_support', {}).get('iptables', {}).get('enabled', False) %}
 
 {%- set grains_fragment_file = service_name+'/meta/iptables.yml' %}
 {%- macro load_grains_file() %}{% include grains_fragment_file %}{% endmacro %}
 {%- set grains_yaml = load_grains_file()|load_yaml %}
 {%- set meta_rules = meta_rules + grains_yaml.iptables.rules %}
 
+{%- endif %}
 {%- endif %}
 {%- endfor %}
 /etc/iptables/rules.v4.tmp:

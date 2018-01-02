@@ -9,7 +9,7 @@ iptables_packages:
   pkg.installed:
   - names: {{ service.pkgs }}
 
-{%- if grains.os_family == 'Debian' %}
+{%- if 'iptables-restore' in service.providers %}
 /usr/share/netfilter-persistent/plugins.d/15-ip4tables:
   file.managed:
     - source: salt://iptables/files/ip4tables
