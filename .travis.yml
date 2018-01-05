@@ -17,15 +17,16 @@ install:
   - bundle install
 
 env:
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=iptables_server
-  - PLATFORM=trevorj/salty-whales:xenial SUITE=iptables_server
+  - PLATFORM=trevorj/salty-whales:trusty SUITE=iptables-server
+  - PLATFORM=trevorj/salty-whales:xenial SUITE=iptables-server
 
 before_script:
   - set -o pipefail
   - make test | tail
 
 script:
-  - KITCHEN_LOCAL_YAML=.kitchen.travis.yml bundle exec kitchen test -t tests/integration
+  - test ! -e .kitchen.yml || bundle exec kitchen converge ${SUITE} || true
+  - test ! -e .kitchen.yml || bundle exec kitchen verify ${SUITE} -t tests/integration
 
 notifications:
   on:
