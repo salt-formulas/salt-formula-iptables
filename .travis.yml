@@ -17,8 +17,9 @@ install:
   - bundle install
 
 env:
-  - PLATFORM=trevorj/salty-whales:trusty SUITE=iptables-server
-  - PLATFORM=trevorj/salty-whales:xenial SUITE=iptables-server
+  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2016.3 SUITE=iptables-server
+  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-xenial-salt-2017.7 SUITE=iptables-server
+#  - PLATFORM=epcim/salt-formulas:saltstack-ubuntu-bionic-salt-2017.7 SUITE=iptables-server
 
 before_script:
   - set -o pipefail
