@@ -55,10 +55,14 @@ iptables_{{ chain_name }}_ipv6_policy:
 {%- macro load_grains_file() %}{% include grains_fragment_file %}{% endmacro %}
 {%- set grains_yaml = load_grains_file()|load_yaml %}
 
-{%- for rule in grains_yaml.iptables.rules %}
-{%- set rule_name = service_name+'_'+loop.index|string %}
+{%- if grains_yaml is iterable %}
+{%-   if grains_yaml.get('iptables',{}).rules is defined %}
+{%-     for rule in grains_yaml.iptables.rules %}
+{%-       set rule_name = service_name+'_'+loop.index|string %}
 {% include "iptables/_rule.sls" %}
-{%- endfor %}
+{%-     endfor %}
+{%-   endif %}
+{%- endif %}
 
 {%- endif %}
 {%- endif %}
