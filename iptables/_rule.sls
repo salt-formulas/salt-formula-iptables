@@ -1,19 +1,20 @@
-iptables_{{ chain_name }}_{{ rule_name }}:
+{%- set table = rule.get('table', 'filter') %}
+iptables_{{ table }}_{{ chain_name }}_{{ rule_name }}:
   {%- if rule.position is defined %}
   iptables.insert:
   - position: {{ rule.position }}
   {%- else %}
   iptables.append:
   - require:
-  {%- if loop.index != 1 %}
-    - iptables: iptables_{{ chain_name }}_{% if service_name is defined %}{{ service_name }}_{% endif %}{{ loop.index - 1 }}
-  {%- else %}
-  {%- for chain in chains %}
-    - iptables: iptables_{{ chain }}
-  {%- endfor %}
+  {%-   if loop.index != 1 %}
+    - iptables: iptables_{{ table }}_{{ chain_name }}_{% if service_name is defined %}{{ service_name }}_{% endif %}{{ loop.index - 1 }}
+  {%-   else %}
+  {%-     for chain in chains %}
+    - iptables: iptables_{{ table }}_{{ chain }}
+  {%-     endfor %}
+  {%-   endif %}
   {%- endif %}
-  {%- endif %}
-  - table: {{ rule.get('table', 'filter') }}
+  - table: {{ table }}
   - chain: {{ chain_name }}
   {%- if rule.family is defined %}
   - family: {{ rule.family }}
@@ -38,9 +39,9 @@ iptables_{{ chain_name }}_{{ rule_name }}:
   {%- endif %}
   {%- if rule.destination_ports is defined %}
   - dports:
-  {%- for port in rule.destination_ports %}
+  {%-   for port in rule.destination_ports %}
     - {{ port }}
-  {% endfor %}
+  {%    endfor %}
   {%- endif %}
   {%- if rule.source_port is defined %}
   - sport: {{ rule.source_port }}
@@ -60,27 +61,34 @@ iptables_{{ chain_name }}_{{ rule_name }}:
   {%- if rule.to_source is defined %}
   - to-source: {{ rule.to_source }}
   {%- endif %}
-  {%-  if rule.source_network is defined %}
+  {%- if rule.source_network is defined %}
   - source: {{ rule.source_network }}
   {%- endif %}
-  {%-  if rule.destination_network is defined %}
+  {%- if rule.destination_network is defined %}
   - destination: {{ rule.destination_network }}
   {%- endif %}
-  {%-  if rule.log_prefix is defined %}
+  {%- if rule.log_prefix is defined %}
   - log-prefix: '{{ rule.log_prefix }}'
   {%- endif %}
-  {%-  if rule.log_level is defined %}
+  {%- if rule.log_level is defined %}
   - log-level: {{ rule.log_level }}
   {%- endif %}
-  {%-  if rule.limit is defined %}
+  {%- if rule.limit is defined %}
   - limit: '{{ rule.limit }}'
   {%- endif %}
   {%- if chain.policy is defined %}
+  {%-   if chain.policy is string %}
   - require_in:
-    - iptables: iptables_{{ chain_name }}_policy
+    - iptables: iptables_filter_{{ chain_name }}_policy
+  {%-   else %}
+  {%-     if table in chain.policy %}
+  - require_in:
+    - iptables: iptables_{{ table }}_{{ chain_name }}_policy
+  {%-     endif %}
+  {%-   endif %}
   {%- endif %}
   {%- if grains.get('virtual_subtype', None) not in ['Docker', 'LXC'] %}
   - require:
-    - iptables: iptables_{{ chain_name }}{% if rule.family is defined %}_{{ rule.family }}{% endif %}
+    - iptables: iptables_{{ table}}_{{ chain_name }}{% if rule.family is defined %}_{{ rule.family }}{% endif %}
   {%- endif %}
   - save: True

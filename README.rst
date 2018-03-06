@@ -132,6 +132,34 @@ IPv6 is supported as well
                   source_network: 2001:DB8::/32
                   jump: ACCEPT
 
+
+You may set policy for chain in specific table
+If 'table' key is omitted, 'filter' table is assumed
+
+.. code-block:: yaml
+
+    parameters:
+      iptables:
+        service:
+          enabled: true
+          chain:
+            OUTPUT:
+              policy: ACCEPT
+
+Specify policy directly
+
+.. code-block:: yaml
+
+    parameters:
+      iptables:
+        service:
+          enabled: true
+          chain:
+            FORWARD:
+              policy:
+              - table: mangle
+                policy: DROP
+
 Read more
 =========
 
