@@ -4,9 +4,13 @@ iptables_{{ chain_name }}_{{ rule_name }}:
   - position: {{ rule.position }}
   {%- else %}
   iptables.append:
-  {%- if loop.index != 1 %}
   - require:
+  {%- if loop.index != 1 %}
     - iptables: iptables_{{ chain_name }}_{% if service_name is defined %}{{ service_name }}_{% endif %}{{ loop.index - 1 }}
+  {%- else %}
+  {%- for chain in chains %}
+    - iptables: iptables_{{ chain }}
+  {%- endfor %}
   {%- endif %}
   {%- endif %}
   - table: {{ rule.get('table', 'filter') }}
