@@ -9,6 +9,31 @@ iptables_packages:
   pkg.installed:
   - names: {{ service.pkgs }}
 
+{%- if 'iptables-restore' in service.providers %}
+/usr/share/netfilter-persistent/plugins.d/15-ip4tables:
+  file.managed:
+    - source: salt://iptables/files/ip4tables
+    - mode: 755
+    - template: jinja
+    - defaults:
+        provider: {{ service.get('provider') }}
+    - require:
+      - pkg: iptables_packages
+    - watch_in:
+      - service: iptables_services
+/usr/share/netfilter-persistent/plugins.d/25-ip6tables:
+  file.managed:
+    - source: salt://iptables/files/ip6tables
+    - mode: 755
+    - template: jinja
+    - defaults:
+        provider: {{ service.get('provider') }}
+    - require:
+      - pkg: iptables_packages
+    - watch_in:
+      - service: iptables_services
+{%- endif %}
+
 iptables_services:
 {%- if grains.init == 'systemd' %}
   service.running:

@@ -1,6 +1,78 @@
 {% from "iptables/map.jinja" import service with context %}
 {%- if grains.get('virtual_subtype', None) not in ['Docker', 'LXC'] %}
 
+{%- if 'iptables-restore' in service.providers and service.get('provider') == "iptables-restore" %}
+
+{%- set meta_rules = [] %}
+{%- for service_name, meta_service in pillar.items() %}
+{%- if meta_service is mapping %}
+{%- if meta_service.get('_support', {}).get('iptables', {}).get('enabled', False) %}
+
+{%- set grains_fragment_file = service_name+'/meta/iptables.yml' %}
+{%- macro load_grains_file() %}{% include grains_fragment_file %}{% endmacro %}
+{%- set grains_yaml = load_grains_file()|load_yaml %}
+{%- set meta_rules = meta_rules + grains_yaml.iptables.rules %}
+
+{%- endif %}
+{%- endif %}
+{%- endfor %}
+/etc/iptables/rules.v4.tmp:
+  file.managed:
+    - source: salt://iptables/files/rules.v4
+    - template: jinja
+    - makedirs: True
+    - defaults:
+        chains: {{ service.get('chain', {}) }}
+        meta_rules: {{ meta_rules }}
+    - require:
+      - pkg: iptables_packages
+      - file: /usr/share/netfilter-persistent/plugins.d/15-ip4tables
+iptables-restore --test /etc/iptables/rules.v4.tmp:
+  cmd.run:
+    - onchanges:
+      - file: /etc/iptables/rules.v4.tmp
+cp -a /etc/iptables/rules.v4.tmp /etc/iptables/rules.v4:
+  cmd.run:
+    - onchanges:
+      - cmd: "iptables-restore --test /etc/iptables/rules.v4.tmp"
+    - watch_in:
+      - service: iptables_services
+cp -a /etc/iptables/rules.v4 /etc/iptables/rules.v4.tmp:
+  cmd.run:
+    - onfail:
+      - cmd: "iptables-restore --test /etc/iptables/rules.v4.tmp"
+
+{%- if grains.ipv6|default(False) and service.ipv6|default(True) %}
+/etc/iptables/rules.v6.tmp:
+  file.managed:
+    - source: salt://iptables/files/rules.v6
+    - template: jinja
+    - makedirs: True
+    - defaults:
+        chains: {{ service.get('chain', {}) }}
+        meta_rules: {{ meta_rules }}
+    - require:
+      - pkg: iptables_packages
+      - file: /usr/share/netfilter-persistent/plugins.d/25-ip6tables
+    - watch_in:
+      - service: iptables_services
+ip6tables-restore --test /etc/iptables/rules.v6.tmp:
+  cmd.run:
+    - onchanges:
+      - file: /etc/iptables/rules.v6.tmp
+cp -a /etc/iptables/rules.v6.tmp /etc/iptables/rules.v6:
+  cmd.run:
+    - onchanges:
+      - cmd: "ip6tables-restore --test /etc/iptables/rules.v6.tmp"
+    - watch_in:
+      - service: iptables_services
+cp -a /etc/iptables/rules.v6 /etc/iptables/rules.v6.tmp:
+  cmd.run:
+    - onfail:
+      - cmd: "ip6tables-restore --test /etc/iptables/rules.v6.tmp"
+{%- endif %}
+{%- else %}
+
 {%- for chain_name, chain in service.get('chain', {}).iteritems() %}
 
 iptables_{{ chain_name }}:
@@ -74,4 +146,5 @@ iptables_{{ chain_name }}_ipv6_policy:
 {%- endfor %}
 
 {%- endfor %}
+{%- endif %}
 {%- endif %}

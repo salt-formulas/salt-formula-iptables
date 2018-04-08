@@ -1,0 +1,76 @@
+# This file is managed by SaltStack
+{%- for table in ['mangle', 'nat', 'filter'] %}
+
+*{{ table }}
+{%- for chain_name, chain in chains.iteritems() %}
+:{{ chain_name | upper }} {{ chain.get('policy', '-') | upper }}
+{%- endfor %}
+
+{%- for chain_name, chain in chains.iteritems() %}
+{%- for rule in chain.rules %}
+{%- if rule.get('table', 'filter').lower() == table and rule.get('family', 'ipv4') == 'ipv6' %}
+{%- set r = {
+  'full': 'True',
+  'table': table,
+  'chain': chain_name.upper(),
+  'command': 'A',
+  'family': 'ipv6',
+  'comment': rule.get('comment', '') + '__saltstack__',
+} %}
+{%- if rule.position is defined %}
+{%- do r.update({
+  'command': 'I',
+  'position': rule['position'],
+}) %}
+{%- endif %}
+{%- if rule.jump is defined %}
+{%- do r.update({'jump': rule.jump}) %}
+{%- endif %}
+{%- if rule.match is defined %}
+{%- do r.update({'match': rule.match}) %}
+{%- endif %}
+{%- if rule.connection_state is defined %}
+{%- do r.update({'connstate': rule.connection_state}) %}
+{%- endif %}
+{%- if rule.protocol is defined %}
+{%- do r.update({'proto': rule.protocol}) %}
+{%- endif %}
+{%- if rule.destination_port is defined %}
+{%- do r.update({'dport': rule.destination_port}) %}
+{%- endif %}
+{%- if rule.source_port is defined %}
+{%- do r.update({'sport': rule.source_port}) %}
+{%- endif %}
+{%- if rule.in_interface is defined %}
+{%- do r.update({'in-interface': rule.in_interface}) %}
+{%- endif %}
+{%- if rule.out_interface is defined %}
+{%- do r.update({'out-interface': rule.out_interface}) %}
+{%- endif %}
+{%- if rule.to_destination is defined %}
+{%- do r.update({'to-destination': rule.to_destination}) %}
+{%- endif %}
+{%- if rule.to_port is defined %}
+{%- do r.update({'to-port': rule.to_port}) %}
+{%- endif %}
+{%- if rule.to_source is defined %}
+{%- do r.update({'to-source': rule.to_source}) %}
+{%- endif %}
+{%- if rule.source_network is defined %}
+{%- do r.update({'source': rule.source_network}) %}
+{%- endif %}
+{%- if rule.destination_network is defined %}
+{%- do r.update({'destination': rule.destination_network}) %}
+{%- endif %}
+{%- if rule.mark is defined %}
+{%- do r.update({'mark': rule.mark}) %}
+{%- endif %}
+{%- if rule.set_mark is defined %}
+{%- do r.update({'set-mark': rule.set_mark}) %}
+{%- endif %}
+{{ salt['iptables.build_rule'](**r) | regex_replace('^.*-t %s ' % table, '') }}
+{%- endif %}
+{%- endfor %}
+{%- endfor %}
+COMMIT
+{%- endfor %}
