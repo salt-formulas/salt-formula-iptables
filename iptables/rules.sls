@@ -1,6 +1,7 @@
 {% from "iptables/map.jinja" import service with context %}
 {%- if grains.get('virtual_subtype', None) not in ['Docker', 'LXC'] %}
 
+{%- set chains = service.get('chain', {}).keys() %}
 {%- for chain_name, chain in service.get('chain', {}).iteritems() %}
 
 iptables_{{ chain_name }}:
