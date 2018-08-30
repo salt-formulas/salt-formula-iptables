@@ -1,10 +1,10 @@
 Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: salt-formula-iptables
-Upstream-Contact: Ales Komarek <ales.komarek@tcpcloud.eu>
-Source: https://github.com/tcpcloud/salt-formula-iptables
+Upstream-Contact: Dzmitry Stremkouski <dstremkouski@mirantis.com>
+Source: https://github.com/Mirantis/salt-formula-iptables
 
 Files: *
-Copyright: 2014-2015 tcp cloud a.s.
+Copyright: 2018 Mirantis a.s.
 License: Apache-2.0
   Copyright (C) 2014-2015 tcp cloud a.s.
   .

@@ -36,8 +36,7 @@ platforms:
 
 suites:
 
-  - name: iptables_server
+  - name: iptables
     provisioner:
       pillars-from-files:
-        iptables.sls: tests/pillar/iptables_server.sls
-# vim: ft=yaml sw=2 ts=2 sts=2 tw=125
+        iptables.sls: tests/pillar/iptables.sls

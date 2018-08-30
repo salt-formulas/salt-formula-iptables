@@ -1,15 +1,85 @@
+{% set schema = salt['grains.filter_by']({
+    'default': {
+    },
+}, grain='os_family', merge=salt['pillar.get']('iptables:schema')) %}
 
 {% set service = salt['grains.filter_by']({
-    'Debian': {
-        'pkgs': ['iptables','iptables-persistent' ],
-        'service': 'netfilter-persistent',
-    },
     'RedHat': {
-        'pkgs': ['iptables'],
-        'service': 'iptables',
+        'v4': {
+            'enabled': true,
+            'persistent_config': '/etc/sysconfig/iptables',
+            'pkgs': [' iptables' ],
+            'service': 'iptables',
+            'modules': [],
+        },
+        'v6': {
+            'enabled': true,
+            'persistent_config': '/etc/sysconfig/ip6tables',
+            'pkgs': [ 'iptables' ],
+            'service': 'iptables',
+            'modules': [],
+        },
     },
-}, merge=salt['grains.filter_by']({
-    'trusty': {
-        'service': 'iptables-persistent',
+    'Debian': {
+        'v4': {
+            'enabled': true,
+            'persistent_config': '/etc/iptables/rules.v4',
+            'pkgs': [ 'iptables','iptables-persistent' ],
+            'service': 'netfilter-persistent',
+            'modules': [ 'iptable_filter', 'ip_tables' ],
+        },
+        'v6': {
+            'enabled': true,
+            'persistent_config': '/etc/iptables/rules.v6',
+            'pkgs': [ 'iptables','iptables-persistent' ],
+            'service': 'netfilter-persistent',
+            'modules': [ 'ip6table_filter', 'ip6_tables' ],
+        },
     },
-}, grain='oscodename', merge=salt['pillar.get']('iptables:service'))) %}
+}, grain='os_family', merge=salt['pillar.get']('iptables:service')) %}
+
+{% set defaults = salt['grains.filter_by']({
+    'default': {
+        'v4': {
+            'metadata_rules': false,
+            'policy': 'ACCEPT',
+            'ruleset': {
+                'action': 'ACCEPT',
+                'params': '',
+                'rule': '',
+            },
+        },
+        'v6': {
+            'metadata_rules': false,
+            'policy': 'ACCEPT',
+            'ruleset': {
+                'action': 'ACCEPT',
+                'params': '',
+                'rule': '',
+            },
+        },
+    },
+}, grain='os_family', merge=salt['pillar.get']('iptables:defaults')) %}
+
+{% set tables = salt['grains.filter_by']({
+    'default': {
+        'v4': {
+            'filter': {
+                'chains': {
+                    'INPUT': {},
+                    'OUTPUT': {},
+                    'FORWARD': {},
+                },
+            },
+        },
+        'v6': {
+            'filter': {
+                'chains': {
+                    'INPUT': {},
+                    'OUTPUT': {},
+                    'FORWARD': {},
+                },
+            },
+        },
+    },
+}, grain='os_family', merge=salt['pillar.get']('iptables:tables')) %}

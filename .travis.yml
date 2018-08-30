@@ -20,11 +20,11 @@ install:
   - bundle install
 
 env:
-  - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2016.3 SUITE=iptables-server
-  - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2017.7 SUITE=iptables-server
-  - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2018.3 SUITE=iptables-server
-#  - PLATFORM=epcim/salt:saltstack-ubuntu-bionic-salt-2017.7 SUITE=iptables-server
-#  - PLATFORM=epcim/salt:saltstack-ubuntu-bionic-salt-2018.3 SUITE=iptables-server
+  - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2016.3 SUITE=iptables
+  - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2017.7 SUITE=iptables
+  - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2018.3 SUITE=iptables
+#  - PLATFORM=epcim/salt:saltstack-ubuntu-bionic-salt-2017.7 SUITE=iptables
+#  - PLATFORM=epcim/salt:saltstack-ubuntu-bionic-salt-2018.3 SUITE=iptables
 
 before_script:
   - set -o pipefail

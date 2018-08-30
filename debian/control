@@ -1,15 +1,15 @@
 Source: salt-formula-iptables
-Maintainer: Jan Kaufman <jan.kaufman@tcpcloud.eu>
+Maintainer: Dzmitry Stremkouski <dstremkouski@mirantis.com>
 Section: admin
-Priority: optional
+Priority: extra
 Build-Depends: salt-master, python, python-yaml, debhelper (>= 9)
 Standards-Version: 3.9.6
-Homepage: http://www.tcpcloud.eu
-Vcs-Browser: https://github.com/tcpcloud/salt-formula-iptables
-Vcs-Git: https://github.com/tcpcloud/salt-formula-iptables.git
+Homepage: https://mirantis.com
+Vcs-Browser: https://github.com/Mirantis/salt-formula-iptables
+Vcs-Git: https://github.com/Mirantis/salt-formula-iptables.git
 
 Package: salt-formula-iptables
 Architecture: all
 Depends: ${misc:Depends}
 Description: iptables salt formula
- Configure iptables rules.
+ Manages iptables rules.
