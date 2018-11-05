@@ -6,7 +6,7 @@ sudo: required
 install:
   - |
     git clone https://gerrit.mcp.mirantis.com/salt-formulas/salt-formulas-scripts
-    ./salt-formulas-scripts/bootstrap-openstack-kitchen.sh	
+    sudo -H bash ./salt-formulas-scripts/bootstrap-openstack-kitchen.sh
 
 env:
   - UBUNTU_DISTRO=xenial SALT_VERSION=2018.3 SUITE=iptables
