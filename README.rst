@@ -28,13 +28,13 @@ Sample pillars
         service:
           v4:
             enabled: true
-            persistent_config: /etc/iptables.v4
+            persistent_config: /etc/iptables/rules.v4
             modules:
             - nf_conntrack_ftp
             - nf_conntrack_pptp
           v6:
             enabled: false
-            persistent_config: /etc/iptables.v6
+            persistent_config: /etc/iptables/rules.v6
             modules:
             - nf_conntrack_ipv6
         defaults:
@@ -70,8 +70,8 @@ Sample pillars
                       comment: "Log my packets"
             nat:
               chains:
-                OUTPUT:
-                PREROUTING:
+                OUTPUT: {}
+                PREROUTING: {}
                 POSTROUTING:
                   policy: ACCEPT
                   ruleset:

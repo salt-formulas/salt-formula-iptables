@@ -44,8 +44,8 @@ iptables:
                 action: LOG
       nat:
         chains:
-          OUTPUT:
-          PREROUTING:
+          OUTPUT: {}
+          PREROUTING: {}
           POSTROUTING:
             policy: ACCEPT
             ruleset:

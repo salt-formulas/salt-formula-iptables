@@ -2,38 +2,25 @@ language: python
 python:
 - "2.7.13"
 sudo: required
-services:
-  - docker
 
 install:
-  - pip install PyYAML
-  - pip install virtualenv
   - |
-    test -e Gemfile || cat <<EOF > Gemfile
-    source 'https://rubygems.org'
-    gem 'rake'
-    gem 'test-kitchen'
-    gem 'kitchen-docker'
-    gem 'kitchen-inspec'
-    gem 'inspec', '<3.0.0'
-    #Version was frozen, because of issues in the version of inspec >3.0.0 -- see https://mirantis.jira.com/browse/PROD-24324 for more info
-    gem 'kitchen-salt', :git => 'https://github.com/salt-formulas/kitchen-salt.git'
-  - bundle install
+    git clone https://gerrit.mcp.mirantis.com/salt-formulas/salt-formulas-scripts
+    ./salt-formulas-scripts/bootstrap-openstack-kitchen.sh	
 
 env:
-  - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2016.3 SUITE=iptables
-  - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2017.7 SUITE=iptables
-  - PLATFORM=epcim/salt:saltstack-ubuntu-xenial-salt-2018.3 SUITE=iptables
-#  - PLATFORM=epcim/salt:saltstack-ubuntu-bionic-salt-2017.7 SUITE=iptables
-#  - PLATFORM=epcim/salt:saltstack-ubuntu-bionic-salt-2018.3 SUITE=iptables
+  - UBUNTU_DISTRO=xenial SALT_VERSION=2018.3 SUITE=iptables
+  - UBUNTU_DISTRO=xenial SALT_VERSION=2017.7 SUITE=iptables
+  - UBUNTU_DISTRO=bionic SALT_VERSION=2018.3 SUITE=iptables
+  - UBUNTU_DISTRO=bionic SALT_VERSION=2017.7 SUITE=iptables
 
 before_script:
   - set -o pipefail
   - make test | tail
 
 script:
-  - test ! -e .kitchen.yml || bundle exec kitchen converge ${SUITE} || true
-  - test ! -e .kitchen.yml || bundle exec kitchen verify ${SUITE} -t tests/integration
+  - test ! -e .kitchen.openstack.yml || bundle exec kitchen converge ${SUITE} || true
+  - test ! -e .kitchen.openstack.yml || bundle exec kitchen verify ${SUITE} -t tests/integration
 
 notifications:
   on:

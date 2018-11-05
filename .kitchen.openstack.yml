@@ -1,0 +1,59 @@
+---
+driver:
+  name: openstack
+  openstack_username: <%= ENV['OS_USERNAME'] %>
+  openstack_api_key: <%= ENV['OS_PASSWORD'] %>
+  openstack_auth_url: <%= ENV['OS_AUTH_URL'] %>
+  openstack_domain_name: <%= ENV['OS_DOMAIN_NAME'] %>
+  openstack_project_name: <%= ENV['OS_PROJECT_NAME'] %>
+  openstack_identity_api_version: <%= ENV['OS_IDENTITY_VERSION'] || 3 %>
+  availability_zone: <%= ENV['OS_AZ'] || 'nova' %>
+  openstack_network_name: <%= ENV['OS_FLOATING_NETWORK_NAME'] || 'public' %>
+  security_groups:
+  - kitchen
+  network_id: <%= ENV['OS_INTERNAL_NETWORK_ID'] || '21790488-0dc2-4864-9016-ae4f09d8a67f' %>
+  user_data: user_data.sh
+  require_chef_omnibus: false
+  floating_ip_pool: <%= ENV['OS_FLOATING_NETWORK_NAME'] || 'public' %>
+  image_id: <%= ENV['OS_IMAGE_ID'] || '60878bd4-cb4a-4d71-ae02-2a8ee4476d10' %>
+  flavor_id: <%= ENV['OS_FLAVOR_ID'] || 'ac2a36af-f9a0-4af7-8220-e85cff4d2bce' %>
+  read_timeout: 180
+  write_timeout: 180
+  connect_timeout: 180
+
+transport:
+  username: kitchen
+  password: kitchen
+  connection_timeout: 10
+  connection_retries: 5
+
+provisioner:
+  name: salt_solo
+  salt_install: bootstrap
+  salt_bootstrap_url: https://bootstrap.saltstack.com
+  salt_version: <%= ENV['SALT_VERSION'] || '2018.3.0' %>
+  require_chef: false
+  log_level: error
+  formula: iptables
+  state_top:
+    base:
+      "*":
+        - iptables
+  pillars:
+    top.sls:
+      base:
+        "*":
+          - iptables
+
+verifier:
+  name: inspec
+  sudo: true
+
+platforms:
+  - name: saltstack-ubuntu-<%= ENV['UBUNTU_DISTRO'] || 'xenial' %>-salt-<%= ENV['SALT_VERSION'] || '2018.3.0' %>
+
+suites:
+  - name: iptables
+    provisioner:
+      pillars-from-files:
+        iptables.sls: tests/pillar/iptables.sls
