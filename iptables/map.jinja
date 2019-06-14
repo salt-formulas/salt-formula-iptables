@@ -8,14 +8,14 @@
         'v4': {
             'enabled': true,
             'persistent_config': '/etc/sysconfig/iptables',
-            'pkgs': [' iptables' ],
+            'pkgs': [ 'iptables', 'iptables-services' ],
             'service': 'iptables',
             'modules': [],
         },
         'v6': {
             'enabled': true,
             'persistent_config': '/etc/sysconfig/ip6tables',
-            'pkgs': [ 'iptables' ],
+            'pkgs': [ 'iptables', 'iptables-services' ],
             'service': 'iptables',
             'modules': [],
         },
