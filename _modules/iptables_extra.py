@@ -22,7 +22,7 @@ def get_tables(family="ipv4"):
     try:
         tables_list = Popen(cmd, shell=True, stdout=PIPE)
         while True:
-            line = tables_list.stdout.readline()
+            line = tables_list.stdout.readline().decode()
             if line != '':
                 if line[0] == "*":
                     tables.append(line.rstrip()[1:])
